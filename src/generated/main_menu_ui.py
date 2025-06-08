@@ -262,7 +262,8 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "CV Analyzer App"))
-        self.label_2.setText(_translate("MainWindow", "Keywords"))
+        self.label_2.setText(_translate("MainWindow", "Keywords (Pisahkan dengan koma)"))
+        self.keywordSearch.setPlaceholderText(_translate("MainWindow", "React, Java, etc."))
         self.label_3.setText(_translate("MainWindow", "Search Algorithm"))
         self.label_8.setText(_translate("MainWindow", "KMP"))
         self.label_4.setText(_translate("MainWindow", "BP"))

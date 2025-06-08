@@ -81,7 +81,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Keywords</string>
+       <string>Keywords (Pisahkan dengan koma)</string>
       </property>
      </widget>
     </item>
@@ -130,6 +130,9 @@
       </property>
       <property name="plainText">
        <string/>
+      </property>
+      <property name="placeholderText">
+       <string>React, Java, etc.</string>
       </property>
      </widget>
     </item>
