@@ -1,16 +1,15 @@
 from convertPDFtoText import convert_for_regex
 import os
-from concurrent.futures import ThreadPoolExecutor
 import random
 from faker import Faker
 import sqlite3
-import threading
+from concurrent.futures import ProcessPoolExecutor
+from tqdm import tqdm
 
 # Config
 DB_PATH = 'data/cv_database.db'
 PDF_DIR = 'data/pdf'
 TXT_DIR = 'data/txt'
-PDF_TO_TXT_WORKERS = 32
 INDONESIAN_PHONE_PREFIXES = [
     "0811", "0812", "0813", "0821", "0822", "0823", "0851", "0852", "0853",                         # Telkomsel
     "0814", "0815", "0816", "0855", "0856", "0857", "0858", "0895", "0896", "0897", "0898", "0899", # Indosat Ooredoo
@@ -19,22 +18,21 @@ INDONESIAN_PHONE_PREFIXES = [
     "0881", "0882", "0883", "0884", "0885", "0886", "0887", "0888", "0889"                          # Smartfren
 ]
 
+def convert_pdf_file(args):
+    """
+    Convert a single PDF file to TXT using convert_for_regex.
+    """
+    pdf_path, txt_path = args
+    try:
+        convert_for_regex(pdf_path, txt_path)
+        return os.path.basename(pdf_path), True
+    except Exception:
+        return os.path.basename(pdf_path), False
+
 def convert_all_pdfs_to_txt():
     """
-    Convert all PDF files in the DATA_PDF_DIR to TXT files in REGEX_TXT_DIR.
+    Convert all PDF files in the PDF_DIR to TXT files in TXT_DIR using parallel processing.
     """
-
-    def convert_pdf_file(args):
-        """
-        Convert a single PDF file to TXT using convert_for_regex.
-        Updates a shared counter and prints progress (thread-safe).
-        """
-        pdf_path, txt_path, total, counter, lock = args
-        convert_for_regex(pdf_path, txt_path)
-        with lock:
-            counter[0] += 1
-            print(f"[{counter[0]}/{total}] Converted {os.path.basename(pdf_path)}")
-
     if not os.path.exists(TXT_DIR):
         os.makedirs(TXT_DIR)
 
@@ -45,21 +43,30 @@ def convert_all_pdfs_to_txt():
         print("No PDF files found in the data directory.")
         return
 
-    counter = [0]
-    lock = threading.Lock()
     tasks = [
         (
             os.path.join(PDF_DIR, filename),
-            os.path.join(TXT_DIR, filename.replace('.pdf', '.txt')),
-            total,
-            counter,
-            lock
+            os.path.join(TXT_DIR, filename.replace('.pdf', '.txt'))
         )
         for filename in pdf_files
     ]
 
-    with ThreadPoolExecutor(max_workers=PDF_TO_TXT_WORKERS) as executor:
-        executor.map(convert_pdf_file, tasks)
+    executor = None
+    try:
+        executor = ProcessPoolExecutor()
+        with tqdm(total=total, unit=" file") as pbar:
+            for filename, success in executor.map(convert_pdf_file, tasks):
+                if not success:
+                    print(f"Failed to convert {filename}")
+                pbar.update(1)
+    except KeyboardInterrupt:
+        print("\nPDF conversion interrupted.")
+        if executor:
+            executor.shutdown(wait=False, cancel_futures=True)
+        raise
+    finally:
+        if executor:
+            executor.shutdown(wait=True)
 
 def generate_applicant(fake):
     """
@@ -77,7 +84,7 @@ def generate_applicant(fake):
 def seed_database():
     """
     Seed the SQLite database with applicant and application detail data.
-    """    
+    """
     fake = Faker('id_ID')
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -110,7 +117,7 @@ def seed_database():
         print("No TXT files found. Converting PDFs to TXT...")
         convert_all_pdfs_to_txt()
         txt_files = [f for f in os.listdir(TXT_DIR) if f.endswith('.txt')]
-    
+
     applicant_ids = []
 
     # Prepopulate with some applicants for possible reuse
@@ -123,8 +130,7 @@ def seed_database():
         applicant_ids.append(cursor.lastrowid)
 
     for txt_file in txt_files:
-        # 30% chance to reuse an applicant, or always reuse if remaining applications == prepopulate_count
-        remaining_applications = len(txt_files) - len(applicant_ids)
+        # 30% chance to reuse an applicant
         if applicant_ids and random.random() < 0.3:
             applicant_id = random.choice(applicant_ids)
         else:
@@ -166,8 +172,6 @@ def seed_database():
     print("Database seeded with applicants and application details.")
 
 if __name__ == '__main__':
-    import sys
-
     answer = input("Convert PDFs to TXT before seeding the database? (y/N): ").strip().lower()
     if answer == 'y':
         convert_all_pdfs_to_txt()
@@ -184,5 +188,5 @@ if __name__ == '__main__':
             print("No existing database found, proceeding to seed new data.")
     elif answer != 'n':
         print("Unrecognized input, skipping database drop.\n")
-    
+
     seed_database()
