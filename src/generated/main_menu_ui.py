@@ -191,6 +191,7 @@ class Ui_MainWindow(object):
 "    width: 16px;\n"
 "    border-radius: 0px;\n"
 "}")
+        self.topMatchesNumber.setMinimum(1)
         self.topMatchesNumber.setObjectName("topMatchesNumber")
         self.verticalLayout.addWidget(self.topMatchesNumber)
         spacerItem1 = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)

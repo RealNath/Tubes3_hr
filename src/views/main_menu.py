@@ -10,9 +10,15 @@ class MainMenu(QMainWindow):
         self.ui.setupUi(self)
         
   
-        self.ui.searchButton.clicked.connect(self.testButton)
+        self.ui.searchButton.clicked.connect(self.get_search_result)
 
-    def testButton(self):
-        search_key = re.split(r",\s*", self.ui.keywordSearch.toPlainText())
-        print(search_key)
+    def get_search_result(self):
+        keywords = re.split(r",\s*", self.ui.keywordSearch.toPlainText())
+        mode = "KMP" if self.modeToggle.value() == 0 else "BP"
+        result_amount = self.topMatchesNumber.value()
+        self.search(keywords, mode, result_amount)
+
+
+    def search(keywords, mode, result_amount):
+        pass
 

@@ -349,6 +349,9 @@ QSpinBox::up-button, QSpinBox::down-button {
     border-radius: 0px;
 }</string>
       </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
      </widget>
     </item>
     <item>
