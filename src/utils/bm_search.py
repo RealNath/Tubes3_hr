@@ -45,4 +45,4 @@ def get_last_occur_table(pattern):
 
 
 if __name__ == '__main__':
-    print(bm_search("I love math and mathematics", "math"))
+    print(bm_search("I love math and mathematics", "matg"))
