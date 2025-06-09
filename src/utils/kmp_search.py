@@ -10,8 +10,7 @@ def kmp_search(word, pattern):
     i = 0
     j = 0
     while i <= length_word - length_pat:
-        print(f"{i}, {j}", end=" ")
-        if pattern[j] == word[i+j]:
+        if pattern[j].lower() == word[i+j].lower():
             if j == length_pat-1:
                 occur += 1
                 i += length_pat
@@ -33,7 +32,7 @@ def get_lps_table(pattern):
     lps_table = [0]*(length - 1)
 
     while i < length - 1:
-        if pattern[i] == pattern[last_id]:
+        if pattern[i].lower() == pattern[last_id].lower():
             last_id += 1
             lps_table[i] = last_id
             i += 1
