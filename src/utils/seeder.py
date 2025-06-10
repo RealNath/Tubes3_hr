@@ -1,4 +1,4 @@
-from pdf_to_text_convert import convert_for_regex
+from pdf_to_text_convert import *
 import os
 from concurrent.futures import ThreadPoolExecutor
 import random
@@ -19,7 +19,7 @@ INDONESIAN_PHONE_PREFIXES = [
     "0881", "0882", "0883", "0884", "0885", "0886", "0887", "0888", "0889"                          # Smartfren
 ]
 
-def convert_all_pdfs_to_txt():
+def convert_all_pdfs_to_pattern_match_txt():
     """
     Convert all PDF files in the DATA_PDF_DIR to TXT files in REGEX_TXT_DIR.
     """
@@ -60,6 +60,9 @@ def convert_all_pdfs_to_txt():
 
     with ThreadPoolExecutor(max_workers=PDF_TO_TXT_WORKERS) as executor:
         executor.map(convert_pdf_file, tasks)
+
+def convert_results_pdf_to_regex():
+    pass
 
 def generate_applicant(fake):
     """
@@ -108,7 +111,7 @@ def seed_database():
     txt_files = [f for f in os.listdir(TXT_DIR) if f.endswith('.txt')]
     if not txt_files:
         print("No TXT files found. Converting PDFs to TXT...")
-        convert_all_pdfs_to_txt()
+        convert_all_pdfs_to_pattern_match_txt()
         txt_files = [f for f in os.listdir(TXT_DIR) if f.endswith('.txt')]
     
     applicant_ids = []
@@ -170,7 +173,7 @@ if __name__ == '__main__':
 
     answer = input("Convert PDFs to TXT before seeding the database? (y/N): ").strip().lower()
     if answer == 'y':
-        convert_all_pdfs_to_txt()
+        convert_all_pdfs_to_pattern_match_txt()
         print("All PDFs converted to TXT files.\n")
     elif answer not in ('n', ''):
         print("Unrecognized input, skipping PDF conversion.\n")
