@@ -11,8 +11,6 @@ def cv_search(keywords, mode, result_amount):
     clean_output_dir()
     convert_all_pdfs_to_pattern_match_txt()
 
-
-
 def clean_output_dir():
     OUTPUT_FOLDER = "data/txt"
     if os.path.exists(OUTPUT_FOLDER):
