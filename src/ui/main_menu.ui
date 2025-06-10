@@ -265,7 +265,7 @@ QSlider::groove:horizontal {
          </font>
         </property>
         <property name="text">
-         <string>BP</string>
+         <string>BM</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -467,7 +467,7 @@ QPushButton:hover {
        <string notr="true">color: #555555</string>
       </property>
       <property name="text">
-       <string>Searching...</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
