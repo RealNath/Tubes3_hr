@@ -17,6 +17,14 @@ INDONESIAN_PHONE_PREFIXES = [
     "0831", "0832", "0833", "0838",                                                                 # AXIS
     "0881", "0882", "0883", "0884", "0885", "0886", "0887", "0888", "0889"                          # Smartfren
 ]
+roles = ["ACCOUNTANT", "ADVOCATE", "AGRICULTURE",
+         "APPAREL", "ARTS", "AUTOMOBILE",
+         "AVIATION", "BANKING", "BPO",
+         "BUSINESS-DEVELOPMENT", "CHEF", "CONSTRUCTION",
+         "CONSULTANT", "DESIGNER", "DIGITAL-MEDIA",
+         "ENGINEERING", "FINANCE", "FITNESS",
+         "HEALTHCARE", "HR", "INFORMATION-TECHNOLOGY",
+         "PUBLIC-RELATIONS", "SALES", "TEACHER"]
 
 def convert_pdf_file(args):
     """
