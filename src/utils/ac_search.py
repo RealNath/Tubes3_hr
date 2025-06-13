@@ -64,6 +64,9 @@ def ac_search(text, patternList):
     return result
 
 if __name__ == '__main__':
-    result = ac_search("never gonna give you up, never gonna let you down,",
+    example_1 = ac_search("never gonna give you up, never gonna let you down,",
                         ["never gonna", "give you up", "let you down", "run around with dessert spoon"])
-    print(result)
+    print(example_1)
+
+    example_2 = ac_search("oiai oiiai", ["oiia", "oiiai", "iai", "ai", "oi"])
+    print(example_2)
