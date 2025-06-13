@@ -2,6 +2,10 @@
 
 Aplikasi berbasis Python untuk membaca isi file PDF CV dalam format ATS dan mencari CV yang cocok dengan keyword yang dimasukkan dan membuat summary-nya dengan teknik pencocokan Regex dan pencarian pola string dengan metode KMP (Knuth-Morris-Pratt) dan BM (Boyer-Moore)
 
+## Penjelasan 
+
+[Diisi entar]
+
 ## Dibuat oleh
 
 * Dzubyan Ilman Ramadhan (10122010)
