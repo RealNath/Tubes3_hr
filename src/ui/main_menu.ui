@@ -81,7 +81,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Keywords</string>
+       <string>Keywords (Pisahkan dengan koma)</string>
       </property>
      </widget>
     </item>
@@ -130,6 +130,9 @@
       </property>
       <property name="plainText">
        <string/>
+      </property>
+      <property name="placeholderText">
+       <string>React, Java, etc.</string>
       </property>
      </widget>
     </item>
@@ -345,6 +348,9 @@ QSpinBox::up-button, QSpinBox::down-button {
     width: 16px;
     border-radius: 0px;
 }</string>
+      </property>
+      <property name="minimum">
+       <number>1</number>
       </property>
      </widget>
     </item>

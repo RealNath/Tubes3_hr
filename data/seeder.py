@@ -1,4 +1,4 @@
-from convertPDFtoText import convert_for_regex
+from pdf_to_text_convert import convert_for_regex
 import os
 import random
 from faker import Faker
