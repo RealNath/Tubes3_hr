@@ -17,14 +17,14 @@ INDONESIAN_PHONE_PREFIXES = [
     "0831", "0832", "0833", "0838",                                                                 # AXIS
     "0881", "0882", "0883", "0884", "0885", "0886", "0887", "0888", "0889"                          # Smartfren
 ]
-roles = ["ACCOUNTANT", "ADVOCATE", "AGRICULTURE",
-         "APPAREL", "ARTS", "AUTOMOBILE",
-         "AVIATION", "BANKING", "BPO",
-         "BUSINESS-DEVELOPMENT", "CHEF", "CONSTRUCTION",
-         "CONSULTANT", "DESIGNER", "DIGITAL-MEDIA",
-         "ENGINEERING", "FINANCE", "FITNESS",
-         "HEALTHCARE", "HR", "INFORMATION-TECHNOLOGY",
-         "PUBLIC-RELATIONS", "SALES", "TEACHER"]
+roles = {"ACCOUNTANT":0, "ADVOCATE":0, "AGRICULTURE":0,
+         "APPAREL":0, "ARTS":0, "AUTOMOBILE":0,
+         "AVIATION":0, "BANKING":0, "BPO":0,
+         "BUSINESS-DEVELOPMENT":0, "CHEF":0, "CONSTRUCTION":0,
+         "CONSULTANT":0, "DESIGNER":0, "DIGITAL-MEDIA":0,
+         "ENGINEERING":0, "FINANCE":0, "FITNESS":0,
+         "HEALTHCARE":0, "HR":0, "INFORMATION-TECHNOLOGY":0,
+         "PUBLIC-RELATIONS":0, "SALES":0, "TEACHER":0}
 
 def convert_pdf_file(args):
     """
@@ -153,12 +153,17 @@ def seed_database():
         # Search for application_role in first or second line
         txt_path = os.path.join(TXT_DIR, txt_file)
         with open(txt_path, 'r', encoding='utf-8') as f:
-            first_line = f.readline().strip()
-            if len(first_line) <= 2:
-                second_line = f.readline().strip()
-                application_role = second_line
-            else:
-                application_role = first_line
+            # first_line = f.readline().strip()
+            # if len(first_line) <= 2:
+            #     second_line = f.readline().strip()
+            #     application_role = second_line
+            # else:
+            #     application_role = first_line
+            text = txt_path.read();
+            for role in roles:
+                roles[role] = text.count(role)
+            application_role = max(roles, key=role.get())
+            
 
         # Use the corresponding PDF file in the data folder, relative to project root
         pdf_filename = txt_file.replace('.txt', '.pdf')
