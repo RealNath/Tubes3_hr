@@ -1,4 +1,6 @@
 PyQt5
-pdfminer.six
 faker
 tqdm
+pymupdf
+mysql-connector-python
+python-dotenv

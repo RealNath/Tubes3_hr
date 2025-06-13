@@ -164,27 +164,9 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QVBoxLayout" name="verticalAlgorithmLayout">
       <item>
-       <widget class="QLabel" name="label_8">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
+       <widget class="QRadioButton" name="radioKMP">
         <property name="font">
          <font>
           <family>Bahnschrift SemiBold</family>
@@ -194,68 +176,15 @@
          </font>
         </property>
         <property name="text">
-         <string>KMP</string>
+         <string>KMP (Knuth-Morris-Pratt)</string>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSlider" name="modeToggle">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QSlider::handle:horizontal {
-    background: #3498db;
-    border: 1px solid #2980b9;
-    width: 10px;
-    height: 10px;
-    border-radius: 10px;  /* half of width/height to make it a circle */
-    margin: -5px 0;       /* center handle on the groove */
-}
-
-QSlider::groove:horizontal {
-    height: 10px;
-    background: #ddd;
-    border-radius: 3px;
-}</string>
-        </property>
-        <property name="maximum">
-         <number>1</number>
-        </property>
-        <property name="pageStep">
-         <number>1</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
+       <widget class="QRadioButton" name="radioBM">
         <property name="font">
          <font>
           <family>Bahnschrift SemiBold</family>
@@ -265,28 +194,24 @@ QSlider::groove:horizontal {
          </font>
         </property>
         <property name="text">
-         <string>BP</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>BM (Boyer-Moore)</string>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QRadioButton" name="radioAC">
+        <property name="font">
+         <font>
+          <family>Bahnschrift SemiBold</family>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
+        <property name="text">
+         <string>AC (Aho-Corasick)</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>400</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </item>
