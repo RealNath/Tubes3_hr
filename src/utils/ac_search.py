@@ -7,7 +7,7 @@ class Node:
         self.fail = None
 
 def build_trie(patternList):
-    root = Node(None)
+    root = Node()
 
     # trie
     for pattern in patternList:
@@ -62,3 +62,8 @@ def ac_search(text, patternList):
             result[pattern].append(i-len(pattern)+1)
     
     return result
+
+if __name__ == '__main__':
+    result1 = ac_search("never gonna give you up, never gonna let you down,",
+                        ["never gonna", "give you up", "let you down", "run around with dessert spoon"])
+    print(result1)
