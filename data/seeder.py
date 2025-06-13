@@ -2,7 +2,7 @@ from pdf_to_text_convert import convert_pdf_to_txt
 import os
 import random
 from faker import Faker
-import mysql.connector
+import pymysql
 from concurrent.futures import ProcessPoolExecutor
 from tqdm import tqdm
 from dotenv import load_dotenv
@@ -43,7 +43,7 @@ def get_mysql_connection(database=None):
     config = MYSQL_CONFIG.copy()
     if database:
         config['database'] = database
-    return mysql.connector.connect(**config)
+    return pymysql.connect(**config)
 
 def create_database_and_tables(conn):
     """

@@ -2,5 +2,5 @@ PyQt5
 faker
 tqdm
 pymupdf
-mysql-connector-python
+pymysql
 python-dotenv

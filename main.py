@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from src.views.main_menu import MainMenu
-import mysql.connector
+import pymysql
 from dotenv import load_dotenv
 
 def main():
@@ -23,7 +23,7 @@ def main():
     app.setStyle('Fusion')
 
     # Create a global MySQL connection
-    db_conn = mysql.connector.connect(**mysql_config)
+    db_conn = pymysql.connect(**mysql_config)
 
     menu_window = MainMenu(db_conn)
     menu_window.show()

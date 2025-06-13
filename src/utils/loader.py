@@ -1,5 +1,4 @@
 import re
-import mysql.connector
 import fitz  # PyMuPDF
 import os
 
