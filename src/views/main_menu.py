@@ -1,13 +1,26 @@
 from src.generated.main_menu_ui import Ui_MainWindow
 from src.utils.loader import load_pdf
 from src.generated.result_card import Ui_resultCard 
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
+from PyQt5.QtCore import Qt
 import re
 from src.utils.kmp_search import kmp_search
 from src.utils.bm_search import bm_search
 from src.utils.ac_search import ac_search
 import time
 
+class ResultCard(QWidget):
+    def __init__(self, name, matches_number, matched_keywords):
+        #Summary & link later
+        super().__init__()
+        self.setFixedSize(900, 500)
+        self.ui = Ui_resultCard()
+        self.ui.setupUi(self)
+
+        self.ui.name.setText(name)
+        self.ui.matches_number.setText(f"{matches_number} {"matches" if matches_number > 1 else "match"}")
+        self.ui.matched_keywords.setText(matched_keywords)
+                                    
 class MainMenu(QMainWindow):
     def __init__(self, conn):
         super().__init__()
@@ -36,9 +49,50 @@ class MainMenu(QMainWindow):
 
         print(f"Searching for keywords: {keywords} using {mode} algorithm, top {result_amount} results")
         start_time = time.time()
-        result = self.search(keywords, mode, result_amount)
+        results = self.search(keywords, mode, result_amount)
         search_time = time.time() - start_time
         print(f"Search completed in {search_time:.4f} seconds")
+
+        self.display_result(results, search_time)
+
+    def display_result(self, results, search_time):
+        self.clear_grid_layout()
+        self.ui.searchResultData.setText(f"Loading time : {search_time:.3f} s")
+        for i, result in enumerate(results):
+            name = result.get('applicant_name')
+            matches_number = result.get('total')
+            matched_keywords = ""
+            keywords_dict = result.get('keywords')
+            for j, (key, value) in enumerate(keywords_dict.items()):
+                matched_keywords += f"{j+1}. {key} : {value} {"occurences" if value > 1 else "occurence"}"
+
+            result_card = ResultCard(name, matches_number, matched_keywords)
+            row = i//3
+            col = i%3
+            self.ui.searchResult.addWidget(result_card, row, col, Qt.AlignTop | Qt.AlignLeft)
+
+    def clear_grid_layout(self):
+        """
+        Clears all widgets from a QGridLayout.
+        Ensures proper deletion of widgets to prevent memory leaks.
+        """
+        if self.ui.searchResult is None:
+            return
+
+        # Iterate backwards to safely remove items.
+        # Alternatively, you can always takeAt(0) repeatedly as shown in the previous answer.
+        # Looping backward is generally more intuitive for lists where indices change.
+        # For QLayouts, takeAt(0) is often used because it simplifies index management.
+
+        # Method 1: Using takeAt(0) repeatedly (most common for QLayouts)
+        while self.ui.searchResult.count() > 0:
+            item = self.ui.searchResult.takeAt(0)
+            if item.widget():
+                widget = item.widget()
+                widget.setParent(None) # Unparent the widget
+                widget.deleteLater()   # Schedule for deletion
+            del item # Delete the QLayoutItem itself
+
 
     def search(self, keywords, mode, result_amount):
         """
@@ -129,15 +183,5 @@ class MainMenu(QMainWindow):
         top_results = results[:result_amount]
         for result in top_results: print(result)
         return top_results
-
-    def renderResult(results, keywords):
-        pass
-        #Results should be array of dictionary, 
-        #Dictionary have : Name, total search, occurence for each keyowrd (summary, link) <- later
-        #Put data in label below "Results"
-        #Get top matches number
-        #For each, make a result car, with the data from searches
-        #Put it in grid, 3x3 
-
     
 
