@@ -1,7 +1,12 @@
 ALPHABET = "abcdefghijklmnopqrstuvwxyz "
 
-def bm_search(word, pattern):
-    length_word = len(word)
+def bm_search(text, pattern):
+    '''
+    Args:
+        text (str): Teks
+        pattern (str): Kata kunci yang ingin dicari pada teks
+    '''
+    length_word = len(text)
     length_pattern = len(pattern)
     occur = 0
 
@@ -12,20 +17,20 @@ def bm_search(word, pattern):
     i = 0
     j = length_pattern - 1
     while i <= length_word - length_pattern:
-        if pattern[j].lower() == word[i+j].lower():
+        if pattern[j].lower() == text[i+j].lower():
             if j == 0:
                 occur += 1
                 i += length_pattern
                 j = length_pattern - 1
             else:
                 j -= 1
-        elif b.get(word[i+j]) == -1:
+        elif b.get(text[i+j]) == -1:
             i += j + 1
             j = length_pattern - 1
-        elif b.get(word[i+j]) < j:
-            i += j - b.get(word[i+j])
+        elif b.get(text[i+j]) < j:
+            i += j - b.get(text[i+j])
             j = length_pattern - 1
-        elif b.get(word[i+j]) > j:
+        elif b.get(text[i+j]) > j:
             i += 1
             j = length_pattern - 1
 

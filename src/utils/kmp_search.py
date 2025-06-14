@@ -1,5 +1,12 @@
-def kmp_search(word, pattern):
-    length_word = len(word)
+def kmp_search(text, pattern):
+    '''
+    Mencari *pattern* dalam *text* dengan algoritma Knuth-Morris-Pratt
+    
+    Args:
+        text (str): Teks
+        pattern (str): Kata kunci yang ingin dicari pada teks
+    '''
+    length_word = len(text)
     length_pat = len(pattern)
     occur = 0
 
@@ -10,7 +17,7 @@ def kmp_search(word, pattern):
     i = 0
     j = 0
     while i <= length_word - length_pat:
-        if pattern[j].lower() == word[i+j].lower():
+        if pattern[j].lower() == text[i+j].lower():
             if j == length_pat-1:
                 occur += 1
                 i += length_pat
