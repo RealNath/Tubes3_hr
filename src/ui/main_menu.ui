@@ -277,6 +277,9 @@ QSpinBox::up-button, QSpinBox::down-button {
       <property name="minimum">
        <number>1</number>
       </property>
+      <property name="maximum">
+       <number>1000</number>
+      </property>
      </widget>
     </item>
     <item>

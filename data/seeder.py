@@ -15,6 +15,7 @@ MYSQL_CONFIG = {
     'host': os.environ.get('MYSQL_HOST', 'localhost'),
     'user': os.environ.get('MYSQL_USER', 'root'),
     'password': os.environ.get('MYSQL_PASSWORD', ''),
+    'database': DB_NAME
 }
 
 PDF_DIR = 'data/pdf'
@@ -53,8 +54,8 @@ def create_database_and_tables(conn):
     cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
     cursor.close()
 
-    conn.database = DB_NAME
     cursor = conn.cursor()
+    cursor.execute(f"USE {DB_NAME}")
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS ApplicantProfile(
             applicant_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -145,6 +146,7 @@ def seed_database(conn):
     """
     Seed the MySQL database with applicant and application detail data.
     """
+    
     fake = Faker('id_ID')
     create_database_and_tables(conn)
     cursor = conn.cursor()
@@ -207,7 +209,7 @@ def seed_database(conn):
     print("Database seeded with applicants and application details.")
 
 if __name__ == '__main__':
-    conn = get_mysql_connection()
+    conn = get_mysql_connection(DB_NAME)
 
     answer = input("Convert PDFs to TXT before seeding the database? (y/N): ").strip().lower()
     if answer == 'y':
