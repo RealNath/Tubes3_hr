@@ -26,9 +26,9 @@ def levenshtein_distance(str1, str2):
     
     return dp[str_len_1][str_len_2]
 
-def similarity(str1, str2):
+def similarity_score(str1, str2):
     """
-    Skor kemiripan antara string str1 dan str2. Semakin besar, semakin mirip.
+    Skor kemiripan (0.0 sampai 1.0) antara string str1 dan str2.
     """
     distance = levenshtein_distance(str1, str2)
     max_length = max(len(str1), len(str2))
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     b = "oiiai oiai"
     print(f"str1: \"{a}\"\nstr2: \"{b}\"")
     print(f"Distance: {levenshtein_distance(a, b)}")
-    print(f"Similarity: {similarity(a, b):.3f}")
+    print(f"Similarity: {similarity_score(a, b):.3f}")
