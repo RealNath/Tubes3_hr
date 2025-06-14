@@ -129,9 +129,6 @@ class MainMenu(QMainWindow):
         top_results = results[:result_amount]
         for result in top_results: print(result)
         return top_results
-        mode = "KMP" if self.ui.modeToggle.value() == 0 else "BM"
-        result_amount = self.ui.topMatchesNumber.value()
-        self.cv_search(keywords, mode, result_amount)
 
     def renderResult(results, keywords):
         pass

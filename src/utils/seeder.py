@@ -1,4 +1,4 @@
-from .pdf_to_text_convert import *
+from src.utils.pdf_to_text_convert import *
 import os
 import random
 from faker import Faker
