@@ -1,1 +1,0 @@
-ALTER TABLE applicantprofile MODIFY applicant_id INT AUTO_INCREMENT;

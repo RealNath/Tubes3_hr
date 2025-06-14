@@ -1,8 +1,6 @@
 from src.generated.main_menu_ui import Ui_MainWindow
 from src.utils.loader import load_pdf
 from src.generated.result_card import Ui_resultCard 
-#import src.utils
-from src.controller.SearchController import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
 import re
 from src.utils.kmp_search import kmp_search
