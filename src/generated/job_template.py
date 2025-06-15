@@ -14,15 +14,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Job_Form(object):
     def setupUi(self, Job_Form):
         Job_Form.setObjectName("Job_Form")
-        Job_Form.resize(432, 82)
+        Job_Form.resize(434, 104)
         self.jobFrame = QtWidgets.QFrame(Job_Form)
-        self.jobFrame.setGeometry(QtCore.QRect(0, 0, 431, 81))
+        self.jobFrame.setGeometry(QtCore.QRect(0, 0, 431, 101))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.jobFrame.sizePolicy().hasHeightForWidth())
         self.jobFrame.setSizePolicy(sizePolicy)
-        self.jobFrame.setMinimumSize(QtCore.QSize(430, 80))
+        self.jobFrame.setMinimumSize(QtCore.QSize(430, 100))
         self.jobFrame.setStyleSheet("QFrame#jobFrame {\n"
 "    background-color: #E0E0E0; /* Light grey background */\n"
 "    border-radius: 10px;    /* Adjust for desired roundness */\n"
@@ -49,6 +49,16 @@ class Ui_Job_Form(object):
         self.jobTitle.setStyleSheet("border: none;")
         self.jobTitle.setObjectName("jobTitle")
         self.verticalLayout.addWidget(self.jobTitle)
+        self.jobCompany = QtWidgets.QLabel(self.jobFrame)
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift SemiBold")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.jobCompany.setFont(font)
+        self.jobCompany.setStyleSheet("border:none;")
+        self.jobCompany.setObjectName("jobCompany")
+        self.verticalLayout.addWidget(self.jobCompany)
         self.jobYear = QtWidgets.QLabel(self.jobFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -81,6 +91,7 @@ class Ui_Job_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Job_Form.setWindowTitle(_translate("Job_Form", "Form"))
         self.jobTitle.setText(_translate("Job_Form", "Title"))
+        self.jobCompany.setText(_translate("Job_Form", "Company"))
         self.jobYear.setText(_translate("Job_Form", "Year-Year"))
         self.jobDescription.setText(_translate("Job_Form", "Lorem Ipsum Dolot Sit Amet"))
 

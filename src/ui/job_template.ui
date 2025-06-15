@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>432</width>
-    <height>82</height>
+    <width>434</width>
+    <height>104</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>0</x>
      <y>0</y>
      <width>431</width>
-     <height>81</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -31,7 +31,7 @@
    <property name="minimumSize">
     <size>
      <width>430</width>
-     <height>80</height>
+     <height>100</height>
     </size>
    </property>
    <property name="styleSheet">
@@ -70,6 +70,24 @@
       </property>
       <property name="text">
        <string>Title</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="jobCompany">
+      <property name="font">
+       <font>
+        <family>Bahnschrift SemiBold</family>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border:none;</string>
+      </property>
+      <property name="text">
+       <string>Company</string>
       </property>
      </widget>
     </item>

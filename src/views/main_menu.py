@@ -145,7 +145,8 @@ class MainMenu(QMainWindow):
 
     def display_result(self, results, search_time):
         self.clear_grid_layout()
-        self.ui.searchResultData.setText(f"Loading time : {search_time:.3f} s")
+
+        self.ui.searchResultData.setText(f"Search time: {search_time:.3f} s")
         for i, result in enumerate(results):
             applicant_id = result.get('detail_id')
             name = result.get('applicant_name')
