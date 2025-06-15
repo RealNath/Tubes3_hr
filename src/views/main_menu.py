@@ -15,10 +15,12 @@ import time
 import os
 
 class ResultCard(QWidget):
-    def __init__(self, applicant_id, name, matches_number, matched_keywords):
+    def __init__(self, detail_id, pdf_path, name, matches_number, matched_keywords, text):
         #Summary & link later
         super().__init__()
-        self.id = applicant_id
+        self.detail_id = detail_id
+        self.pdf_path = pdf_path
+        self.text = text
         self.setMinimumSize(900, 500)
         self.ui = Ui_resultCard()
         self.ui.setupUi(self)
@@ -27,15 +29,13 @@ class ResultCard(QWidget):
         self.ui.matches_number.setText(f"{matches_number} {"matches" if matches_number > 1 else "match"}")
         self.ui.matched_keywords.setText(matched_keywords)
 
-        #!GMN CARANYA
-        self.pdf_path = None
         self.ui.viewPDF.clicked.connect(self.go_to_pdf)
         self.ui.viewSummary.clicked.connect(self.go_to_summary)
 
         self.summary_window = None
 
     def go_to_pdf(self):
-        file_path = self.pdf_path
+        file_path = self.pdf_path[0]
         if file_path:
             # Check if the file actually exists on the system
             if os.path.exists(file_path):
@@ -72,7 +72,7 @@ class ResultCard(QWidget):
 
     def go_to_summary(self):
         if self.summary_window is None: # Only create once if you want a singleton-like behavior
-            self.summary_window = SummaryPage(self.id)
+            self.summary_window = SummaryPage(self.detail_id, self.text)
         self.summary_window.show()
                                     
 class MainMenu(QMainWindow):
@@ -119,9 +119,6 @@ class MainMenu(QMainWindow):
         results = self.search(keywords, "Fuzzy", exact_result=results)
         fuzzy_search_time = time.time() - start_time
         print(f"Fuzzy search completed in {fuzzy_search_time:.4f} seconds\n")
-        results = self.search(keywords, mode, result_amount)
-        search_time = time.time() - start_time
-        print(f"Search completed in {search_time:.4f} seconds")
 
         # Remove (0, *) entries from keywords
         for result in results:
@@ -130,6 +127,8 @@ class MainMenu(QMainWindow):
         # Sort by total matches, descending, and take top N
         results.sort(key=lambda x: x['total'], reverse=True)
         results = results[:result_amount]
+
+        print(results)
 
         print(f"Top {min(result_amount, len(results))} results:")
         for result in results:
@@ -140,22 +139,31 @@ class MainMenu(QMainWindow):
             print()
 
 
-        self.display_result(results, search_time)
+        self.display_result(results, exact_search_time, fuzzy_search_time)
 
-    def display_result(self, results, search_time):
+    def display_result(self, results, exact_search_time, fuzzy_search_time):
         self.clear_grid_layout()
 
-        self.ui.searchResultData.setText(f"Search time: {search_time:.3f} s")
+        self.ui.searchResultData.setText(f"Exact search time: {exact_search_time:.3f} s\nFuzzy search time: {fuzzy_search_time:.3f} s")
         for i, result in enumerate(results):
-            applicant_id = result.get('detail_id')
+            detail_id = result.get('detail_id')
             name = result.get('applicant_name')
             matches_number = result.get('total')
             matched_keywords = ""
             keywords_dict = result.get('keywords')
+            
+            cursor = self.conn.cursor()
+            cursor.execute(
+                "SELECT cv_path FROM ApplicationDetail WHERE detail_id = %s", (detail_id,)
+            )
+            pdf_path = cursor.fetchone()
+            cursor.close()
+
+    
             for j, (key, value) in enumerate(keywords_dict.items()):
                 matched_keywords += f"{j+1}. {key} : {value[0]} {"occurences" if value[0] > 1 else "occurence"}\n"
 
-            result_card = ResultCard(applicant_id, name, matches_number, matched_keywords)
+            result_card = ResultCard(detail_id, pdf_path, name, matches_number, matched_keywords, text=self.pdf_data[detail_id]['regex'])
             row = i//3
             col = i%3
             self.ui.gridLayout.addWidget(result_card, row, col, Qt.AlignTop | Qt.AlignHCenter)
