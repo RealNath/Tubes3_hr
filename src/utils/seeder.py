@@ -1,4 +1,4 @@
-from pdf_to_text_convert import convert_pdf_to_txt
+from src.utils.pdf_to_text_convert import *
 import os
 import random
 from faker import Faker
@@ -88,7 +88,7 @@ def convert_pdf_file(args):
     except Exception:
         return os.path.basename(pdf_path), False
 
-def convert_all_pdfs_to_txt():
+def convert_all_pdfs_to_pattern_match_txt():
     """
     Convert all PDF files in the PDF_DIR to TXT files in REGEX_TXT_DIR and PATTERN_MATCH_TXT_DIR using parallel processing.
     """
@@ -128,6 +128,9 @@ def convert_all_pdfs_to_txt():
     finally:
         if executor:
             executor.shutdown(wait=True)
+
+def convert_results_pdf_to_regex():
+    pass
 
 def generate_applicant(fake):
     """
@@ -213,7 +216,7 @@ if __name__ == '__main__':
 
     answer = input("Convert PDFs to TXT before seeding the database? (y/N): ").strip().lower()
     if answer == 'y':
-        convert_all_pdfs_to_txt()
+        convert_all_pdfs_to_pattern_match_txt()
         print("All PDFs converted to TXT files.\n")
     elif answer not in ('n', ''):
         print("Unrecognized input, skipping PDF conversion.\n")

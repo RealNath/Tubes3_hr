@@ -2,6 +2,8 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from src.views.main_menu import MainMenu
+from src.models.ApplicantProfile import *
+from src.controller.MainController import *
 import pymysql
 from dotenv import load_dotenv
 
@@ -24,8 +26,9 @@ def main():
 
     # Create a global MySQL connection
     db_conn = pymysql.connect(**mysql_config)
-
-    menu_window = MainMenu(db_conn)
+    model = ApplicantProfileModel()
+    menu_window = MainMenu(db_conn) #View
+    coontroller = MainController(model, menu_window)
     menu_window.show()
     exit_code = app.exec_()
     db_conn.close()
