@@ -4,6 +4,7 @@ from src.generated.summary_menu import Ui_SummaryWindow
 from src.generated.job_template import Ui_Job_Form
 from src.generated.skill_template import Ui_Skill_Form
 from src.generated.education_desc import Ui_Edu_Form
+from src.utils.regex.experience_extractor import *
 
 class SummaryPage(QMainWindow):
     def __init__(self, applicant_id):

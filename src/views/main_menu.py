@@ -29,7 +29,6 @@ class ResultCard(QWidget):
 
         #!GMN CARANYA
         self.pdf_path = None
-        #
         self.ui.viewPDF.clicked.connect(self.go_to_pdf)
         self.ui.viewSummary.clicked.connect(self.go_to_summary)
 
