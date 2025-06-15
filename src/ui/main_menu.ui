@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>897</width>
-    <height>692</height>
+    <width>913</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="cursor">
@@ -43,8 +43,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>817</width>
-         <height>674</height>
+         <width>833</width>
+         <height>702</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -441,11 +441,19 @@ QPushButton:hover {
          </widget>
         </item>
         <item>
-         <layout class="QGridLayout" name="searchResult">
-          <property name="spacing">
-           <number>5</number>
+         <widget class="QWidget" name="searchResult" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-         </layout>
+          <layout class="QGridLayout" name="gridLayout">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>

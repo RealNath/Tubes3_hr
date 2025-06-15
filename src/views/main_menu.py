@@ -1,4 +1,4 @@
-from src.generated.main_menu_ui import Ui_MainWindow
+from src.generated.main_menu import Ui_MainWindow
 from src.utils.loader import load_pdf
 from src.generated.result_card import Ui_resultCard 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
@@ -13,7 +13,7 @@ class ResultCard(QWidget):
     def __init__(self, name, matches_number, matched_keywords):
         #Summary & link later
         super().__init__()
-        self.setFixedSize(900, 500)
+        self.setMinimumSize(900, 500)
         self.ui = Ui_resultCard()
         self.ui.setupUi(self)
 
@@ -69,14 +69,17 @@ class MainMenu(QMainWindow):
             result_card = ResultCard(name, matches_number, matched_keywords)
             row = i//3
             col = i%3
-            self.ui.searchResult.addWidget(result_card, row, col, Qt.AlignTop | Qt.AlignLeft)
+            self.ui.gridLayout.addWidget(result_card, row, col, Qt.AlignTop | Qt.AlignHCenter)
+
+        self.ui.gridLayout.setRowStretch(self.ui.gridLayout.rowCount(), 1) # Add a stretch row at the bottom
+        self.ui.gridLayout.setColumnStretch(self.ui.gridLayout.columnCount(), 1)
 
     def clear_grid_layout(self):
         """
         Clears all widgets from a QGridLayout.
         Ensures proper deletion of widgets to prevent memory leaks.
         """
-        if self.ui.searchResult is None:
+        if self.ui.gridLayout is None:
             return
 
         # Iterate backwards to safely remove items.
@@ -85,8 +88,8 @@ class MainMenu(QMainWindow):
         # For QLayouts, takeAt(0) is often used because it simplifies index management.
 
         # Method 1: Using takeAt(0) repeatedly (most common for QLayouts)
-        while self.ui.searchResult.count() > 0:
-            item = self.ui.searchResult.takeAt(0)
+        while self.ui.gridLayout.count() > 0:
+            item = self.ui.gridLayout.takeAt(0)
             if item.widget():
                 widget = item.widget()
                 widget.setParent(None) # Unparent the widget

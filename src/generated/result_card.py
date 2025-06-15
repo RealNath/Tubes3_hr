@@ -15,7 +15,7 @@ class Ui_resultCard(object):
     def setupUi(self, resultCard):
         resultCard.setObjectName("resultCard")
         resultCard.resize(400, 300)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(resultCard.sizePolicy().hasHeightForWidth())
