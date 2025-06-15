@@ -15,12 +15,13 @@ import time
 import os
 
 class ResultCard(QWidget):
-    def __init__(self, detail_id, pdf_path, name, matches_number, matched_keywords, text):
+    def __init__(self, detail_id, pdf_path, name, matches_number, matched_keywords, text, conn):
         #Summary & link later
         super().__init__()
         self.detail_id = detail_id
         self.pdf_path = pdf_path
         self.text = text
+        self.conn = conn
         self.setMinimumSize(900, 500)
         self.ui = Ui_resultCard()
         self.ui.setupUi(self)
@@ -72,7 +73,25 @@ class ResultCard(QWidget):
 
     def go_to_summary(self):
         if self.summary_window is None: # Only create once if you want a singleton-like behavior
-            self.summary_window = SummaryPage(self.detail_id, self.text)
+            cursor = self.conn.cursor()
+            cursor.execute(
+                "SELECT first_name, last_name, date_of_birth, address, phone_number FROM ApplicationDetail NATURAL JOIN ApplicantProfile WHERE detail_id = %s",
+                (self.detail_id,)
+            )
+            applicant_data = cursor.fetchone()
+            cursor.close()
+
+            if applicant_data:
+                full_name = f"{applicant_data[0]} {applicant_data[1]}"
+                date_of_birth = applicant_data[2]
+                address = applicant_data[3]
+                phone_number = applicant_data[4]
+            else:
+                full_name = "Unknown"
+                date_of_birth = None
+                address = None
+                phone_number = None
+            self.summary_window = SummaryPage(self.detail_id, self.text, full_name, date_of_birth, address, phone_number)
         self.summary_window.show()
                                     
 class MainMenu(QMainWindow):
@@ -144,6 +163,7 @@ class MainMenu(QMainWindow):
     def display_result(self, results, exact_search_time, fuzzy_search_time):
         self.clear_grid_layout()
 
+        self.ui.searchResultData.setMinimumHeight(40)
         self.ui.searchResultData.setText(f"Exact search time: {exact_search_time:.3f} s\nFuzzy search time: {fuzzy_search_time:.3f} s")
         for i, result in enumerate(results):
             detail_id = result.get('detail_id')
@@ -163,7 +183,7 @@ class MainMenu(QMainWindow):
             for j, (key, value) in enumerate(keywords_dict.items()):
                 matched_keywords += f"{j+1}. {key} : {value[0]} {"occurences" if value[0] > 1 else "occurence"}\n"
 
-            result_card = ResultCard(detail_id, pdf_path, name, matches_number, matched_keywords, text=self.pdf_data[detail_id]['regex'])
+            result_card = ResultCard(detail_id, pdf_path, name, matches_number, matched_keywords, text=self.pdf_data[detail_id]['regex'], conn=self.conn)
             row = i//3
             col = i%3
             self.ui.gridLayout.addWidget(result_card, row, col, Qt.AlignTop | Qt.AlignHCenter)

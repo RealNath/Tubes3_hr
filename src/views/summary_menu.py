@@ -5,8 +5,13 @@ from src.generated.job_template import Ui_Job_Form
 from src.generated.skill_template import Ui_Skill_Form
 from src.generated.education_desc import Ui_Edu_Form
 
+from src.utils.regex.education_extractor import extract_education
+from src.utils.regex.experience_extractor import extract_experience
+from src.utils.regex.skill_extractor import extract_skills
+
+
 class SummaryPage(QMainWindow):
-    def __init__(self, detail_id, text):
+    def __init__(self, detail_id, text, full_name, date_of_birth, address, phone_number):
         super().__init__()
         self.ui = Ui_SummaryWindow()
         self.ui.setupUi(self)
@@ -15,25 +20,20 @@ class SummaryPage(QMainWindow):
         self.detail_id = detail_id
         self.text = text
 
-        #!Placeholder
-        name = "Salman Halim"
-        contact = "Address : 6th Street \n Phone : 0888-888-888"
-        #!Holder
-        self.ui.nameLabel.setText(name)
-        self.ui.contactLabel.setText(contact)
+        self.ui.nameLabel.setText(full_name)
 
+        contact_info = str(date_of_birth) + "\n" + str(address) + "\n" + str(phone_number)
+        self.ui.contactLabel.setText(contact_info if contact_info else "Unknown")
 
-        skill = Skill_Form("Asian Cuisine")
+        skill = Skill_Form(extract_skills(self.text))
         self.ui.horizontalLayout.addWidget(skill, Qt.AlignTop | Qt.AlignLeft)
         self.ui.horizontalLayout.addStretch(1)
 
-        job_dict = {"job_title": "Head Chef", "job_company": "Chez Gusteau", "job_year": "2020-2022", "job_desc": ""}
-        job = Job_Form(job_dict)
+        job = Job_Form(extract_experience(self.text)[0])
         self.ui.verticalLayout_3.addWidget(job, Qt.AlignTop | Qt.AlignLeft)
         self.ui.verticalLayout_3.addStretch(1)
 
-        edu_dict = {"edu_major" : "Mathematics", "edu_place": "MIT", "edu_year":"2022-2024"}
-        edu = Edu_Form(edu_dict)
+        edu = Edu_Form(extract_education(self.text))
         self.ui.verticalLayout_4.addWidget(edu, Qt.AlignTop | Qt.AlignLeft)
         self.ui.verticalLayout_4.addStretch(1)
 
@@ -45,13 +45,13 @@ class Job_Form(QWidget):
         self.ui.setupUi(self)
         self.setMinimumSize(430, 100)
         
-        title = job_dict.get("job_title")
+        title = job_dict.get("company")
         self.ui.jobTitle.setText(title)
-        company = job_dict.get("job_company")
+        company = job_dict.get("title")
         self.ui.jobCompany.setText(company)
-        year = job_dict.get("job_year")
+        year = job_dict.get("start") + " - " + job_dict.get("end", "Present")
         self.ui.jobYear.setText(year)
-        desc = job_dict.get("job_desc")
+        desc = job_dict.get("description", "")
         self.ui.jobDescription.setText(desc)
 
 
@@ -61,12 +61,12 @@ class Edu_Form(QWidget):
         self.ui = Ui_Edu_Form()
         self.ui.setupUi(self)
         self.setMinimumSize(450, 75)
-        major = edu_dict.get("edu_major")
+        major = edu_dict.get("major")
         self.ui.eduMajor.setText(major)
-        place = edu_dict.get("edu_place")
+        place = edu_dict.get("school")
         self.ui.eduPlace.setText(place)
-        year = edu_dict.get("edu_year")
-        self.ui.eduYear.setText(year)
+        year = edu_dict.get("year")
+        self.ui.eduYear.setText(str(year))
 
 
 class Skill_Form(QWidget):
@@ -76,7 +76,9 @@ class Skill_Form(QWidget):
         self.ui.setupUi(self)
         self.setMinimumSize(100, 40)
     
-        self.ui.skillName.setText(skill)
+        skill_text = "\n".join(skill) if skill else ""
+
+        self.ui.skillName.setText(skill_text)
         self.ui.skillName.adjustSize()
         self.ui.skillFrame.adjustSize()
 
