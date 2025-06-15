@@ -1,4 +1,5 @@
 from src.generated.main_menu import Ui_MainWindow
+from src.views.summary_menu import SummaryPage
 from src.utils.loader import load_pdf
 from src.generated.result_card import Ui_resultCard 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
@@ -20,12 +21,26 @@ class ResultCard(QWidget):
         self.ui.name.setText(name)
         self.ui.matches_number.setText(f"{matches_number} {"matches" if matches_number > 1 else "match"}")
         self.ui.matched_keywords.setText(matched_keywords)
+
+        self.ui.viewPDF.clicked.connect(self.go_to_pdf)
+        self.ui.viewSummary.clicked.connect(self.go_to_summary)
+
+        self.summary_window = None
+
+    def go_to_pdf():
+        pass
+
+    def go_to_summary(self):
+        if self.summary_window is None: # Only create once if you want a singleton-like behavior
+            self.summary_window = SummaryPage()
+        self.summary_window.show()
                                     
 class MainMenu(QMainWindow):
     def __init__(self, conn):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("CV Reader")
         self.conn = conn
 
         print("Loading PDF data...")
