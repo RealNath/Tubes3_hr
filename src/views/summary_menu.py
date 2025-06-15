@@ -6,13 +6,14 @@ from src.generated.skill_template import Ui_Skill_Form
 from src.generated.education_desc import Ui_Edu_Form
 
 class SummaryPage(QMainWindow):
-    def __init__(self, applicant_id):
+    def __init__(self, detail_id, text):
         super().__init__()
         self.ui = Ui_SummaryWindow()
         self.ui.setupUi(self)
         self.setWindowTitle("Summary")
 
-        self.id = applicant_id
+        self.detail_id = detail_id
+        self.text = text
 
         #!Placeholder
         name = "Salman Halim"
