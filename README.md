@@ -27,33 +27,35 @@ Aplikasi berbasis Python untuk membaca isi file PDF CV dalam format ATS dan menc
    mysql -u root -p < cv_database.sql
    ```
 
-3. Cd ke root, lakukan *seeding* *database*
+3. Pastikan ada folder pdf yang berisi file cv (pdf), cd ke root
 
    ```bash
    cd ..
-   python data/seeder.py
    ```
 
-4. Buat virtual environment lokal
+4. Edit *password* pada file .env sesuai dengan password yang dimasukkan pada tahap 2 tadi
 
-   ```bash
-   python -m venv venv
-   ```
+5. Lakukan *seeding* *database*
+   * Windows: `python data/seeder.py`
+   * Linux: `python3 data/seeder.py`
 
-5. Aktivasi virtual environment
-   * Cmd (Windows): `venv\Scripts\activate.bat`
-   * PowerShell (Windows): `venv\Scripts\Activate.ps1`
-6. Install library-library Python yang dibutuhkan
+6. Buat virtual environment lokal
+   * Windows: `python -m venv venv`
+   * Linux: `python3 -m venv venv`
+
+7. Aktivasi virtual environment
+   * Windows: `venv\Scripts\activate`
+   * Linux: `source venv/bin/activate`
+8. Install library-library Python yang dibutuhkan
 
    ```bash
    pip install -r requirements.txt
    ```
 
-7. Jalankan program utamanya
+9. Jalankan program utamanya
 
-   ```bash
-   python main.py
-   ```
+   * Windows: `python main.py`
+   * Linux: `python3 main.py`
 
 ## Cara Menggunakan Aplikasi
 
