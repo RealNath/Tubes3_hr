@@ -64,7 +64,7 @@ class MainMenu(QMainWindow):
             matched_keywords = ""
             keywords_dict = result.get('keywords')
             for j, (key, value) in enumerate(keywords_dict.items()):
-                matched_keywords += f"{j+1}. {key} : {value} {"occurences" if value > 1 else "occurence"}"
+                matched_keywords += f"{j+1}. {key} : {value} {"occurences" if value > 1 else "occurence"}\n"
 
             result_card = ResultCard(name, matches_number, matched_keywords)
             row = i//3
