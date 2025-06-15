@@ -1,5 +1,18 @@
 import re
 
+_months = r'(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)'
+_year = r'\d{4}'
+# awal atau akhir; bisa <Month YYYY>, <MM/YYYY> atau cuma <YYYY>
+_short_date = rf'(?:{_months}\s+{_year}|\d{{1,2}}[\/\-]\d{{1,2}}(?:[\/\-]\d{{2,4}})?|{_year})'
+# Simbol range tangal
+_range_symbol = r'(?:\s*(?:–|-|to|until)\s*)'
+# date-range with named groups
+DATE_RANGE = re.compile(
+    rf'(?P<start>{_short_date}){_range_symbol}(?P<end>{_short_date}|Present|Current|Now)',
+    re.IGNORECASE
+)
+BULLET_RE = re.compile(r'^\s*[\-\*•▪○►\u2022]\s*')
+
 def extract_experience(text):
     """
     Extract experience/job sections from resume text using regex patterns.
@@ -8,7 +21,7 @@ def extract_experience(text):
         text (str): The resume text to search
         
     Returns:
-        list: Experience list
+        List of dictionary {start_date, end_date, title, company, description}
     """
     
     # Skills section headers
@@ -77,18 +90,9 @@ def extract_experience(text):
     results = []
     
     for match in matches:
-        content = match.group(2).strip()
-
-        # Clean and format the content
-        skills_list = _process_experience(content)
-
-        if skills_list:
-            results.extend(skills_list)
-    
-    # Remove duplicates but preserve order
-    unique_results = list(dict.fromkeys(results))
-    return unique_results
-
+        block = match.group(2).strip()
+        results += _process_experience(block)
+    return results
 
 def _process_experience(content):
     """
@@ -104,78 +108,50 @@ def _process_experience(content):
     lines = [line.strip() for line in content.split('\n')]
     lines = [line for line in lines if line and len(line) > 1]
     
-    skills = []
+    entries = []
     
-    # Check if lines already have bullet points
-    has_bullets = any(re.match(r'^[\s•\-\*▪○►]+', line) for line in lines)
-    
-    if has_bullets:
-        for line in lines:
-            # Remove bullet points and extract skill
-            skill = re.sub(r'^[\s•\-\*▪○►]+', '', line).strip()
-            if skill:
-                # Check if this is a categorical skill
-                if ':' in skill:
-                    category, items = skill.split(':', 1)
-                    category = category.strip()
-                    items = items.strip()
-                    
-                    # Parse items after the colon
-                    item_skills = []
-                    for item in re.split(r'[,;|]', items):
-                        item = item.strip().rstrip('.')
-                        if item and 2 <= len(item) <= 100:
-                            item_skills.append(item)
-                            skills.append(f"{category}: {item}")
-                else:
-                    skills.append(skill)
-    else:
-        for line in lines:
-            # Check if this is a categorical skill (contains colon)
-            if ':' in line:
-                category, items = line.split(':', 1)
-                category = category.strip()
-                items = items.strip()
-                
-                # Parse the items after the colon
-                item_skills = []
-                for item in re.split(r'[,;|]', items):
-                    item = item.strip().rstrip('.')
-                    if item and 2 <= len(item) <= 100:
-                        item_skills.append(item)
-                        skills.append(f"{category}: {item}")
-            else:
-                # Join all non-categorical lines and check for separators
-                all_text = line
-                separators = [',', ';', '|', '•', '▪', '○', '►', '-', '*']
-                
-                # Count separators and find the most common one
-                separator_counts = {}
-                for sep in separators:
-                    separator_counts[sep] = all_text.count(sep)
-                
-                # Find most frequent separator
-                best_separator = max(separator_counts, key=separator_counts.get)
-                best_count = separator_counts[best_separator]
-                word_count = len(all_text.split())
-                
-                # If has many separators, treat as separated list
-                if best_count >= 3 and word_count > 0 and (best_count / word_count) > 0.08:
-                    for part in all_text.split(best_separator):
-                        skill = part.strip()
-                        # Clean up common connectors
-                        skill = re.sub(r'^(and\s+|&\s+)', '', skill, flags=re.IGNORECASE)
-                        skill = re.sub(r'\s+(and|&)\s*$', '', skill, flags=re.IGNORECASE)
-                        skill = re.sub(r'\s+', ' ', skill)  # Normalize whitespace
-                        skill = skill.rstrip('.')  # Remove trailing periods
-                        
-                        # Sanity length check
-                        if skill and 2 <= len(skill) <= 30:
-                            skills.append(skill)
-                else:
-                    # Treat the line as a single skill
-                    skill = line.strip()
-                    if skill and 2 <= len(skill) <= 30:
-                        skills.append(skill)
-    
-    return skills
+    for i, line in enumerate(lines):
+        m = DATE_RANGE.search(line)
+        if not m:
+            continue
+
+        # Capture dates
+        start = m.group('start').strip()
+        end = m.group('end').strip()
+
+        # Pre- and post-date text
+        prefix = line[:m.start()].strip(' -–—')
+        suffix = line[m.end():].strip(' -–—')
+
+        # Heuristics for title and company
+        title, company = prefix, ''
+        if suffix:
+            company = suffix
+        elif ' at ' in prefix.lower():
+            parts = re.split(r'\s+at\s+', prefix, flags=re.IGNORECASE)
+            title = parts[0].strip()
+            company = parts[1].strip() if len(parts) > 1 else ''
+
+        # Collect description until blank line or next date-range
+        desc = ""
+        for j in range(i+1, len(lines)):
+            nl = lines[j]
+            if not nl.strip():
+                break
+            if DATE_RANGE.search(nl):
+                break
+            # Strip any bullet symbol if present, otherwise take full line
+            clean = BULLET_RE.sub('', nl).strip()
+            if clean:
+                if (desc!=""): desc += " "
+                desc += clean
+
+        entries.append({
+            'start': start,
+            'end': end,
+            'title': title,
+            'company': company,
+            'description': desc,
+        })
+
+    return entries
