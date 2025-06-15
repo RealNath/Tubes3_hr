@@ -9,3 +9,5 @@ class SummaryPage(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowTitle("Summary")
 
+        
+

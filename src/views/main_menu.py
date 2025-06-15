@@ -2,19 +2,23 @@ from src.generated.main_menu import Ui_MainWindow
 from src.views.summary_menu import SummaryPage
 from src.utils.loader import load_pdf
 from src.generated.result_card import Ui_resultCard 
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QMessageBox
 from PyQt5.QtCore import Qt
 import re
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QUrl
 from src.utils.kmp_search import kmp_search
 from src.utils.bm_search import bm_search
 from src.utils.ac_search import ac_search
 from src.utils.fuzzy_search import fuzzy_search
 import time
+import os
 
 class ResultCard(QWidget):
-    def __init__(self, name, matches_number, matched_keywords):
+    def __init__(self, applicant_id, name, matches_number, matched_keywords):
         #Summary & link later
         super().__init__()
+        self.id = applicant_id
         self.setMinimumSize(900, 500)
         self.ui = Ui_resultCard()
         self.ui.setupUi(self)
@@ -23,13 +27,49 @@ class ResultCard(QWidget):
         self.ui.matches_number.setText(f"{matches_number} {"matches" if matches_number > 1 else "match"}")
         self.ui.matched_keywords.setText(matched_keywords)
 
+        #!GMN CARANYA
+        self.pdf_path = None
+        #
         self.ui.viewPDF.clicked.connect(self.go_to_pdf)
         self.ui.viewSummary.clicked.connect(self.go_to_summary)
 
         self.summary_window = None
 
-    def go_to_pdf():
-        pass
+    def go_to_pdf(self):
+        file_path = self.pdf_path
+        if file_path:
+            # Check if the file actually exists on the system
+            if os.path.exists(file_path):
+                # Create a QUrl from the local file path
+                pdf_url = QUrl.fromLocalFile(file_path)
+
+                # Use QDesktopServices to open the URL with the system's default application
+                if QDesktopServices.openUrl(pdf_url):
+                    print(f"Successfully opened: {file_path}")
+                else:
+                    QMessageBox.warning(
+                        self,
+                        "Error",
+                        f"Could not open the file: {file_path}\n"
+                        "Please ensure you have a default application set for PDF files."
+                    )
+                    print(f"Failed to open: {file_path}")
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Error",
+                    f"File not found at specified path: {file_path}\n"
+                    "Please ensure the PDF file exists at this location."
+                )
+                print(f"File not found at specified path: {file_path}")
+        else:
+            QMessageBox.critical(
+                self,
+                "Configuration Error",
+                "No PDF file path has been specified in the application."
+            )
+            print("No PDF file path has been specified.")
+
 
     def go_to_summary(self):
         if self.summary_window is None: # Only create once if you want a singleton-like behavior
@@ -84,20 +124,38 @@ class MainMenu(QMainWindow):
         search_time = time.time() - start_time
         print(f"Search completed in {search_time:.4f} seconds")
 
+        # Remove (0, *) entries from keywords
+        for result in results:
+            result['keywords'] = {kw: count for kw, count in result['keywords'].items() if count[0] > 0}
+
+        # Sort by total matches, descending, and take top N
+        results.sort(key=lambda x: x['total'], reverse=True)
+        results = results[:result_amount]
+
+        print(f"Top {min(result_amount, len(results))} results:")
+        for result in results:
+            print(f"Detail ID: {result['detail_id']}\nApplicant: {result['applicant_name']}\nTotal Matches: {result['total']}")
+            for kw, (count, is_fuzzy) in result['keywords'].items():
+                match_type = "Fuzzy" if is_fuzzy else "Exact"
+                print(f"  {kw}: {count} ({match_type})")
+            print()
+
+
         self.display_result(results, search_time)
 
     def display_result(self, results, search_time):
         self.clear_grid_layout()
         self.ui.searchResultData.setText(f"Loading time : {search_time:.3f} s")
         for i, result in enumerate(results):
+            applicant_id = result.get('detail_id')
             name = result.get('applicant_name')
             matches_number = result.get('total')
             matched_keywords = ""
             keywords_dict = result.get('keywords')
             for j, (key, value) in enumerate(keywords_dict.items()):
-                matched_keywords += f"{j+1}. {key} : {value} {"occurences" if value > 1 else "occurence"}\n"
+                matched_keywords += f"{j+1}. {key} : {value[0]} {"occurences" if value[0] > 1 else "occurence"}\n"
 
-            result_card = ResultCard(name, matches_number, matched_keywords)
+            result_card = ResultCard(applicant_id, name, matches_number, matched_keywords)
             row = i//3
             col = i%3
             self.ui.gridLayout.addWidget(result_card, row, col, Qt.AlignTop | Qt.AlignHCenter)
@@ -126,24 +184,6 @@ class MainMenu(QMainWindow):
                 widget.setParent(None) # Unparent the widget
                 widget.deleteLater()   # Schedule for deletion
             del item # Delete the QLayoutItem itself
-
-
-        # Remove (0, *) entries from keywords
-        for result in results:
-            result['keywords'] = {kw: count for kw, count in result['keywords'].items() if count[0] > 0}
-
-        # Sort by total matches, descending, and take top N
-        results.sort(key=lambda x: x['total'], reverse=True)
-        results = results[:result_amount]
-
-        print(f"Top {min(result_amount, len(results))} results:")
-        for result in results:
-            print(f"Detail ID: {result['detail_id']}\nApplicant: {result['applicant_name']}\nTotal Matches: {result['total']}")
-            for kw, (count, is_fuzzy) in result['keywords'].items():
-                match_type = "Fuzzy" if is_fuzzy else "Exact"
-                print(f"  {kw}: {count} ({match_type})")
-            print()
-
 
     def search(self, keywords, mode, exact_result=None):
         """
@@ -286,10 +326,6 @@ class MainMenu(QMainWindow):
 
         cursor.close()
 
-        # Sort by total matches, descending, and take top N
-        results.sort(key=lambda x: x['total'], reverse=True)
-        top_results = results[:result_amount]
-        for result in top_results: print(result)
-        return top_results
-    
-
+        if results:
+            for result in results: print(result)
+        return results
