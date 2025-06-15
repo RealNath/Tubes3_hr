@@ -73,7 +73,7 @@ class ResultCard(QWidget):
 
     def go_to_summary(self):
         if self.summary_window is None: # Only create once if you want a singleton-like behavior
-            self.summary_window = SummaryPage()
+            self.summary_window = SummaryPage(self.id)
         self.summary_window.show()
                                     
 class MainMenu(QMainWindow):

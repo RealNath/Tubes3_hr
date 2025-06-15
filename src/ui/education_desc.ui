@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Edu_Form</class>
+ <widget class="QWidget" name="Edu_Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>516</width>
-    <height>286</height>
+    <width>451</width>
+    <height>76</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,11 +16,23 @@
   <widget class="QFrame" name="educationEntryFrame">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>60</y>
+     <x>0</x>
+     <y>0</y>
      <width>451</width>
-     <height>71</height>
+     <height>75</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>450</width>
+     <height>75</height>
+    </size>
    </property>
    <property name="styleSheet">
     <string notr="true">QFrame#educationEntryFrame {
@@ -52,7 +64,7 @@
        <enum>QLayout::SetFixedSize</enum>
       </property>
       <item>
-       <widget class="QLabel" name="educationMajor">
+       <widget class="QLabel" name="eduMajor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -67,13 +79,16 @@
           <bold>true</bold>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true">border:none;</string>
+        </property>
         <property name="text">
          <string>Mathematics</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="educationPlace">
+       <widget class="QLabel" name="eduPlace">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -85,6 +100,9 @@
           <family>Bahnschrift Light</family>
           <pointsize>12</pointsize>
          </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border:none;</string>
         </property>
         <property name="text">
          <string>Institut Teknologi Bandung</string>
@@ -107,7 +125,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="educationYear">
+     <widget class="QLabel" name="eduYear">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -119,6 +137,9 @@
         <family>Bahnschrift Light</family>
         <pointsize>14</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border:none;</string>
       </property>
       <property name="text">
        <string>2020-2023</string>
