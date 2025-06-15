@@ -8,7 +8,8 @@ def extract_education(text):
         text (str): The resume text to search
         
     Returns:
-        str: Education section content or None if not found
+        dict: { major: str, school: str, year: int }
+
     """
     
     # Education section headers
@@ -87,7 +88,7 @@ def _parse_education(education_content):
         education_content (str): The education section content
 
     Returns:
-        dict: A dictionary with extracted details (degree, major, school)
+        dict: { major: str, school: str, year: int }
     """
     if not education_content:
         return {}
